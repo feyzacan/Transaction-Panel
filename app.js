@@ -1,5 +1,8 @@
 const state = {
     userList: []
+    // transaction: []
+    // state de transaction arrayi oluşturabilirsin her işlem yaptığın
+    // bu array güncellenir ve tek bir render donksiyonu ile işi halletmiş olursun
 }
 
 function Li(list, subscriber) {
@@ -36,12 +39,11 @@ function Hi(list, subscriber) {
 function removeUser(id) {
     const name = state.userList.filter((item) => item.id === id)[0].name
     Hi(name, "del")
-    state.userList.forEach(function (item) {
-        state.userList.filter((item) => item.id === id)
-        state.userList = state.userList.filter((item) => item.id !== id)
-        updateUserList()
-        updateSelectList()
-    })
+
+    // silme işlemini bu şekilde yapabilirsin daha az kod
+    state.userList = state.userList.filter((item) => item.id !== id)
+    updateUserList()
+    updateSelectList()
 }
 
 function renderUserList() {
@@ -91,20 +93,13 @@ function updateSelectList() {
     let toWho = document.getElementById("toWho")
     toWho.innerHTML = `<option selected>Please Select Recipient</option>`
     fromWho.innerHTML = `<option selected>Please Select Sender</option>`
-    state.userList.forEach(function (item) {
-        let newSelectName1 = document.createElement("option")
-        newSelectName1.setAttribute("name", item.name)
-        newSelectName1.innerText = item.name
-        newSelectName1.setAttribute("id", item.id)
-        newSelectName1.setAttribute("balance", item.balance)
-        let newSelectName2 = document.createElement("option")
-        newSelectName2.setAttribute("name", item.name)
-        newSelectName2.innerText = item.name
-        newSelectName2.setAttribute("id", item.id)
-        newSelectName2.setAttribute("balance", item.balance)
-        toWho.appendChild(newSelectName1)
-        fromWho.appendChild(newSelectName2)
+    const elements = state.userList.map(function (item) {
+        const {name, id, balance} = item
+        return selectName = `<option name="${name} balance="${balance}" id="${id}">${name} </option>`
+        
     })
+    toWho.innerHTML = elements.join("")
+    fromWho.innerHTML = elements.join("")
 }
 
 
