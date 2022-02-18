@@ -158,28 +158,18 @@ function cancelTransaction(id) {
     let toWhoId = canceledTransaction.toWhoId
     let value = canceledTransaction.value
     // CHECK IF USERS EXIST
-    state.userList.forEach(function (item) {
-        let found = true
-        if (item.id != fromWhoId) {
-            found = false
-        }
-        if (item.id != toWhoId) {
-            found = false
-        }
-        // UPDATE BALANCES OF TO THE PARTIES
-        if (found == true) {
-            if (item.id == fromWhoId) {
-                item.balance = parseInt(item.balance) + parseInt(value)
-            }
-            if (item.id == toWhoId) {
-                item.balance = parseInt(item.balance) - parseInt(value)
-                let cancelledButton = document.getElementById(id)
-                cancelledButton.disabled = true
-                cancelledButton.innerText = "Canceled"
-            }
-            //ERROR HANDLING
-        } else { alert("Cannot be canceled the transaction! Sender or recipient account does not exist!") }
-    })
+    let sender = state.userList.filter(item => item.id == fromWhoId)[0]
+    let recipient = state.userList.filter(item => item.id == toWhoId)[0]
+    // ERROR HANDLING
+    if (!sender || !recipient) {
+        alert("Cannot be canceled the transaction! Sender or recipient account does not exist!")
+    } else {
+        sender.balance = parseInt(sender.balance) + parseInt(value)
+        recipient.balance = parseInt(recipient.balance) - parseInt(value)
+        let cancelledButton = document.getElementById(id)
+        cancelledButton.disabled = true
+        cancelledButton.innerText = "Canceled"
+    }
     updateUserList()
 }
 
